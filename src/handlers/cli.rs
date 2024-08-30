@@ -26,6 +26,8 @@ pub enum Commands {
     Encode {
         #[arg(help = "The input file to be encoded")]
         input: String,
+        #[arg(help = "The output location of the encoded file")]
+        output_location: Option<String>,
     },
     #[command(
         arg_required_else_help = true,
