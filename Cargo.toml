@@ -2,5 +2,8 @@
 name = "imaghex"
 version = "0.1.0"
 edition = "2021"
+authors = ["Etave Nathan"]
 
 [dependencies]
+clap = { version = "4.5.16", features = ["derive"] }
+image = "0.25.2"
