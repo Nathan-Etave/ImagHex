@@ -37,5 +37,7 @@ pub enum Commands {
     Decode {
         #[arg(help = "The input file to be decoded")]
         input: String,
+        #[arg(help = "The output location of the decoded file")]
+        output_location: Option<String>,
     },
 }
