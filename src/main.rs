@@ -1,15 +1,24 @@
 use clap::Parser;
 use imaghex::handlers::cli::CLI;
 
-fn main() {
-  let args: CLI = CLI::parse();
+use imaghex::processors::decode;
+use imaghex::processors::encode;
 
-  match args.subcommand {
-    imaghex::handlers::cli::Commands::Encode { input, output_location } => {
-      println!("{}, {}", input, output_location.unwrap_or(String::from("./")));
-    },
-    imaghex::handlers::cli::Commands::Decode { input, output_location } => {
-      println!("{}, {}", input, output_location.unwrap_or(String::from("./")));
-    },
-  }
+fn main() {
+    let args: CLI = CLI::parse();
+
+    match args.subcommand {
+        imaghex::handlers::cli::Commands::Encode {
+            input,
+            output_location,
+        } => {
+            encode::encode_file(&input, output_location);
+        }
+        imaghex::handlers::cli::Commands::Decode {
+            input,
+            output_location,
+        } => {
+            decode::decode_file(&input, output_location);
+        }
+    }
 }

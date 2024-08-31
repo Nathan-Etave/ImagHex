@@ -7,3 +7,4 @@ authors = ["Etave Nathan"]
 [dependencies]
 clap = { version = "4.5.16", features = ["derive"] }
 image = "0.25.2"
+png = "0.17.13"

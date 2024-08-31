@@ -6,7 +6,7 @@ use clap::{Parser, Subcommand};
     about = "A tool for encoding files into graphical representations of their bytes and vice versa",
     author = "Etave Nathan",
     version,
-    help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}",
+    help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}"
 )]
 #[command(author, about, version)]
 pub struct CLI {
@@ -21,7 +21,7 @@ pub enum Commands {
         about = "Turns a file into a graphical representation of its bytes",
         author = "Etave Nathan",
         version,
-        help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}",
+        help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}"
     )]
     Encode {
         #[arg(help = "The input file to be encoded")]
@@ -34,7 +34,7 @@ pub enum Commands {
         about = "Turns a graphical representation of bytes back into a file",
         author = "Etave Nathan",
         version,
-        help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}",
+        help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}"
     )]
     Decode {
         #[arg(help = "The input file to be decoded")]
