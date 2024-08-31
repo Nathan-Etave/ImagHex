@@ -12,13 +12,37 @@ fn main() {
             input,
             output_location,
         } => {
-            encode::encode_file(&input, output_location);
+            let result: Result<(), String> = encode::encode_file(&input, &output_location);
+
+            match result {
+                Ok(_) => {
+                    println!(
+                        "File encoded successfully to {}",
+                        output_location.unwrap_or(String::from("."))
+                    );
+                }
+                Err(e) => {
+                    eprintln!("{}", e);
+                }
+            }
         }
         imaghex::handlers::cli::Commands::Decode {
             input,
             output_location,
         } => {
-            decode::decode_file(&input, output_location);
+            let result: Result<(), String> = decode::decode_file(&input, &output_location);
+
+            match result {
+                Ok(_) => {
+                    println!(
+                        "File decoded successfully to {}",
+                        output_location.unwrap_or(String::from("."))
+                    );
+                }
+                Err(e) => {
+                    eprintln!("{}", e);
+                }
+            }
         }
     }
 }

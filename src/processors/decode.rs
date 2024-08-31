@@ -2,8 +2,13 @@ use image::RgbImage;
 
 use crate::io::file;
 
-pub fn decode_file(file_path: &str, output_location: Option<String>) {
-    let image: RgbImage = image::open(file_path).unwrap().to_rgb8();
+pub fn decode_file(file_path: &str, output_location: &Option<String>) -> Result<(), String> {
+    let image: RgbImage = match image::open(file_path) {
+        Ok(image) => image.to_rgb8(),
+        Err(e) => {
+            return Err(e.to_string());
+        }
+    };
 
     let mut header_length: Vec<u8> = image
         .pixels()
@@ -24,11 +29,19 @@ pub fn decode_file(file_path: &str, output_location: Option<String>) {
         .flatten()
         .collect();
 
-    let file_name: String =
-        String::from_utf8(header.split(|&x| x == 0).next().unwrap().to_vec()).unwrap();
+    let file_name = match extract_string_from_header(&header, 0) {
+        Some(name) => name,
+        None => {
+            return Err("Could not extract file name from header".to_string());
+        }
+    };
 
-    let file_extension: String =
-        String::from_utf8(header.split(|&x| x == 0).skip(1).next().unwrap().to_vec()).unwrap();
+    let file_extension = match extract_string_from_header(&header, 1) {
+        Some(extension) => extension,
+        None => {
+            return Err("Could not extract file extension from header".to_string());
+        }
+    };
 
     let mut buffer_length: Vec<u8> = header.split(|&x| x == 0).skip(2).next().unwrap().to_vec();
     while buffer_length.len() < 8 {
@@ -56,10 +69,21 @@ pub fn decode_file(file_path: &str, output_location: Option<String>) {
 
     let output_path = format!(
         "{}/{}.{}",
-        output_location.unwrap_or(String::from(".")),
+        output_location.clone().unwrap_or(String::from(".")),
         file_name,
         file_extension
     );
 
-    file::write_file(&output_path, &buffer).unwrap();
+    if let Err(e) = file::write_file(&output_path, &buffer) {
+        return Err(e.to_string());
+    }
+
+    Ok(())
+}
+
+fn extract_string_from_header(header: &[u8], index: usize) -> Option<String> {
+    let mut header_iter = header.split(|&x| x == 0);
+    let header_string = header_iter.nth(index)?;
+    let header_string = String::from_utf8(header_string.to_vec()).ok()?;
+    Some(header_string)
 }

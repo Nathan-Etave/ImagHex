@@ -2,7 +2,7 @@ use crate::io::file;
 use image::{ImageBuffer, Rgb};
 use std::path::Path;
 
-pub fn encode_file(file_path: &str, output_location: Option<String>) {
+pub fn encode_file(file_path: &str, output_location: &Option<String>) -> Result<(), String> {
     let file_name: String = get_file_name(file_path);
     let file_buffer: Vec<u8> = file::read_file(file_path).unwrap();
 
@@ -42,11 +42,15 @@ pub fn encode_file(file_path: &str, output_location: Option<String>) {
 
     let output_path = format!(
         "{}/{}.png",
-        output_location.unwrap_or(String::from(".")),
+        output_location.clone().unwrap_or(String::from(".")),
         file_name
     );
 
-    file::write_compressed_png(image, width, height, &output_path).unwrap();
+    if let Err(e) = file::write_compressed_png(image, width, height, &output_path) {
+        return Err(e.to_string());
+    }
+
+    Ok(())
 }
 
 fn create_header(file_path: &str, file_name: &str, buffer_length: usize) -> Vec<u8> {
