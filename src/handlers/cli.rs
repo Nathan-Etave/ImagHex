@@ -1,12 +1,20 @@
 use clap::{Parser, Subcommand};
 
+const AUTHOR: &str = "Etave Nathan";
+const HELP_TEMPLATE: &str = "{name} {version} - {author}\n\n{about}\n\n{all-args}";
+const APP_NAME: &str = "ImagHex";
+const APP_ABOUT: &str =
+    "A tool for encoding files into graphical representations of their bytes and vice versa";
+const ENCODE_ABOUT: &str = "Turns a file into a graphical representation of its bytes";
+const DECODE_ABOUT: &str = "Turns a graphical representation of bytes back into a file";
+
 #[derive(Parser)]
 #[clap(
-    name = "ImagHex",
-    about = "A tool for encoding files into graphical representations of their bytes and vice versa",
-    author = "Etave Nathan",
+    name = APP_NAME,
+    about = APP_ABOUT,
+    author = AUTHOR,
     version,
-    help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}"
+    help_template = HELP_TEMPLATE
 )]
 #[command(author, about, version)]
 pub struct CLI {
@@ -18,10 +26,10 @@ pub struct CLI {
 pub enum Commands {
     #[command(
         arg_required_else_help = true,
-        about = "Turns a file into a graphical representation of its bytes",
-        author = "Etave Nathan",
+        about = ENCODE_ABOUT,
+        author = AUTHOR,
         version,
-        help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}"
+        help_template = HELP_TEMPLATE
     )]
     Encode {
         #[arg(help = "The input file to be encoded")]
@@ -31,10 +39,10 @@ pub enum Commands {
     },
     #[command(
         arg_required_else_help = true,
-        about = "Turns a graphical representation of bytes back into a file",
-        author = "Etave Nathan",
+        about = DECODE_ABOUT,
+        author = AUTHOR,
         version,
-        help_template = "{name} {version} - {author}\n\n{about}\n\n{all-args}"
+        help_template = HELP_TEMPLATE
     )]
     Decode {
         #[arg(help = "The input file to be decoded")]
