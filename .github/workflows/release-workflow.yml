@@ -1,0 +1,53 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+env: 
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: imaghex
+
+jobs:
+  build_and_test:
+    name: Build (${{ matrix.os }} - ${{ matrix.toolchain }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        toolchain: [stable]
+        include:
+          - os: ubuntu-latest
+            binary_extension: ""
+          - os: windows-latest
+            binary_extension: ".exe"
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
+      
+      - name: Get Version
+        shell: bash
+        run: echo "VERSION=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[0].version')" >> $GITHUB_ENV
+
+      - name: Build
+        run: cargo build --verbose --release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BINARY_NAME }}-${{ matrix.os }}
+          path: target/release/${{ env.BINARY_NAME }}${{ matrix.binary_extension }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          asset_name: ${{ env.BINARY_NAME }}-${{ matrix.os }}${{ matrix.binary_extension }}
+          files: target/release/${{ env.BINARY_NAME }}${{ matrix.binary_extension }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
